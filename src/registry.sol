@@ -21,7 +21,7 @@ contract PushRegistry {
     }
 
 
-    function get(uint what) public returns(uint) {
+    function get(uint what) public view returns(uint) {
          return data[what];
     }
 
@@ -66,7 +66,7 @@ contract SumPushRegistry {
         data[what] = value;
     }
 
-    function get(uint what) public returns(uint) {
+    function get(uint what) public view returns(uint) {
          return data[what];
     }
 
