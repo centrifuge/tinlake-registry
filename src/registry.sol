@@ -1,12 +1,9 @@
 pragma solidity ^0.5.3;
 
-contract PushRegistry {
-    // --- Auth ---
-    mapping (address => uint) public wards;
-    function rely(address usr) public auth { wards[usr] = 1; }
-    function deny(address usr) public auth { wards[usr] = 0; }
-    modifier auth { require(wards[msg.sender] == 1); _; }
+import 'tinlake-auth/auth.sol';
+import 'tinlake-math/math.sol';
 
+contract PushRegistry is Auth {
 
     // --- Data ---
     mapping (uint => uint) public data;
@@ -30,14 +27,7 @@ contract PushRegistry {
     }
 }
 
-contract SumPushRegistry {
-    // --- Auth ---
-    mapping (address => uint) public wards;
-    function rely(address usr) public auth { wards[usr] = 1; }
-    function deny(address usr) public auth { wards[usr] = 0; }
-    modifier auth { require(wards[msg.sender] == 1); _; }
-
-
+contract SumPushRegistry is Auth, Math {
     // --- Data ---
     mapping (uint => uint) public data;
     uint public                   sum;
@@ -46,22 +36,12 @@ contract SumPushRegistry {
         wards[msg.sender] = 1;
     }
 
-
-    // --- Math ---
-    function add(uint x, uint y) internal pure returns (uint z) {
-        require((z = x + y) >= x);
-    }
-
-    function sub(uint x, uint y) internal pure returns (uint z) {
-        require((z = x - y) <= x);
-    }
-
     // --- List ---
     function update(uint what, uint value) internal {
         if (value < data[what]) {
-            sum = sub(sum, (data[what] - value));
+            sum = safeSub(sum, safeSub(data[what], value));
         } else {
-            sum = add(sum, (value - data[what]));
+            sum = safeAdd(sum, safeSub(value, data[what]));
         }
         data[what] = value;
     }
