@@ -1,4 +1,4 @@
-pragma solidity ^0.5.3;
+pragma solidity >=0.5.15 <0.6.0;
 
 import 'tinlake-auth/auth.sol';
 import 'tinlake-math/math.sol';
